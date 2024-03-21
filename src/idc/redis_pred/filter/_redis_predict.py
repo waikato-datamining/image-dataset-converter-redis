@@ -17,6 +17,8 @@ class RedisConnection:
     channel_in: str = "predictions"
     timeout: float = 5.0
     data = None
+    pubsub = None
+    pubsub_thread = None
 
 
 class AbstractRedisPredict(Filter):
@@ -144,6 +146,7 @@ class AbstractRedisPredict(Filter):
                 self._redis_conn.data = d
                 self._redis_conn.pubsub_thread.stop()
                 self._redis_conn.pubsub.close()
+                self._redis_conn.pubsub_thread = None
                 self._redis_conn.pubsub = None
 
             self._redis_conn.pubsub = self._redis_conn.connection.pubsub()
@@ -161,6 +164,9 @@ class AbstractRedisPredict(Filter):
                     if (end - start).total_seconds() >= self._redis_conn.timeout:
                         self.logger().info("Timeout reached!")
                         no_data = True
+                        self._redis_conn.pubsub_thread.stop()
+                        self._redis_conn.pubsub_thread = None
+                        self._redis_conn.pubsub = None
                         break
 
             if no_data:
