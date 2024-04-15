@@ -1,4 +1,4 @@
-from ._redis_filter import AbstractRedisFilter
+from ._redis_filter import AbstractRedisFilter, RedisFilterSession
 from ._redis_predict_ic import ImageClassificationRedisPredict
 from ._redis_predict_is import ImageSegmentationRedisPredict
 from ._redis_predict_od import ObjectDetectionRedisPredict

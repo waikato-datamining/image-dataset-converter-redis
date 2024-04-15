@@ -11,7 +11,7 @@ from idc.api import flatten_list, make_list
 
 
 @dataclass
-class RedisConnection:
+class RedisFilterSession:
     connection: redis.Redis = None
     channel_out: str = "images"
     channel_in: str = "predictions"
@@ -59,7 +59,7 @@ class AbstractRedisFilter(Filter):
         self.channel_in = channel_in
         self.timeout = timeout
         self.sleep_time = sleep_time
-        self._redis_conn = None
+        self._redis_session = None
 
     def _create_argparser(self) -> argparse.ArgumentParser:
         """
@@ -113,12 +113,12 @@ class AbstractRedisFilter(Filter):
             self.timeout = 5.0
         if self.sleep_time is None:
             self.sleep_time = 0.01
-        self._redis_conn = RedisConnection()
-        self._redis_conn.connection = redis.Redis(host=self.redis_host, port=self.redis_port, db=self.redis_db)
-        self._redis_conn.channel_out = self.channel_out
-        self._redis_conn.channel_in = self.channel_in
-        self._redis_conn.timeout = self.timeout
-        self._redis_conn.data = None
+        self._redis_session = RedisFilterSession()
+        self._redis_session.connection = redis.Redis(host=self.redis_host, port=self.redis_port, db=self.redis_db)
+        self._redis_session.channel_out = self.channel_out
+        self._redis_session.channel_in = self.channel_in
+        self._redis_session.timeout = self.timeout
+        self._redis_session.data = None
 
     def _process_data(self, item, data):
         """
@@ -143,30 +143,30 @@ class AbstractRedisFilter(Filter):
 
             def anon_handler(message):
                 d = message['data']
-                self._redis_conn.data = d
-                self._redis_conn.pubsub_thread.stop()
-                self._redis_conn.pubsub.close()
-                self._redis_conn.pubsub_thread = None
-                self._redis_conn.pubsub = None
+                self._redis_session.data = d
+                self._redis_session.pubsub_thread.stop()
+                self._redis_session.pubsub.close()
+                self._redis_session.pubsub_thread = None
+                self._redis_session.pubsub = None
 
-            self._redis_conn.pubsub = self._redis_conn.connection.pubsub()
-            self._redis_conn.pubsub.psubscribe(**{self._redis_conn.channel_in: anon_handler})
-            self._redis_conn.pubsub_thread = self._redis_conn.pubsub.run_in_thread(sleep_time=self.sleep_time)
-            self._redis_conn.connection.publish(self._redis_conn.channel_out, item.image_bytes)
+            self._redis_session.pubsub = self._redis_session.connection.pubsub()
+            self._redis_session.pubsub.psubscribe(**{self._redis_session.channel_in: anon_handler})
+            self._redis_session.pubsub_thread = self._redis_session.pubsub.run_in_thread(sleep_time=self.sleep_time)
+            self._redis_session.connection.publish(self._redis_session.channel_out, item.image_bytes)
 
             # wait for data to show up
             start = datetime.now()
             no_data = False
-            while self._redis_conn.pubsub is not None:
+            while self._redis_session.pubsub is not None:
                 sleep(self.sleep_time)
                 end = datetime.now()
-                if self._redis_conn.timeout > 0:
-                    if (end - start).total_seconds() >= self._redis_conn.timeout:
+                if self._redis_session.timeout > 0:
+                    if (end - start).total_seconds() >= self._redis_session.timeout:
                         self.logger().info("Timeout reached!")
                         no_data = True
-                        self._redis_conn.pubsub_thread.stop()
-                        self._redis_conn.pubsub_thread = None
-                        self._redis_conn.pubsub = None
+                        self._redis_session.pubsub_thread.stop()
+                        self._redis_session.pubsub_thread = None
+                        self._redis_session.pubsub = None
                         break
 
             if no_data:
@@ -176,7 +176,7 @@ class AbstractRedisFilter(Filter):
                 self.logger().info("Round trip time: %f sec" % (end - start).total_seconds())
 
             # process data
-            item_new = self._process_data(item, self._redis_conn.data)
+            item_new = self._process_data(item, self._redis_session.data)
 
             if item_new is not None:
                 result.append(item_new)
