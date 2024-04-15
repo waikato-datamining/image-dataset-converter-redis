@@ -25,7 +25,7 @@ class ImageSegmentationRedisPredict(AbstractRedisFilter):
 
     def __init__(self, redis_host: str = None, redis_port: int = None, redis_db: int = None,
                  channel_out: str = None, channel_in: str = None, timeout: float = None,
-                 sleep_time: float = None, image_format: str = None,
+                 timeout_action: str = None, sleep_time: float = None, image_format: str = None,
                  logger_name: str = None, logging_level: str = LOGGING_WARNING):
         """
         Initializes the filter.
@@ -42,6 +42,8 @@ class ImageSegmentationRedisPredict(AbstractRedisFilter):
         :type channel_in: str
         :param timeout: the time in seconds to wait for predictions
         :type timeout: float
+        :param timeout_action: the action to take when a timeout happens
+        :type timeout_action: str
         :param sleep_time: the time in seconds between polls
         :type sleep_time: float
         :param image_format: the format of the predictions
@@ -53,7 +55,8 @@ class ImageSegmentationRedisPredict(AbstractRedisFilter):
         """
         super().__init__(redis_host=redis_host, redis_port=redis_port, redis_db=redis_db,
                          channel_out=channel_out, channel_in=channel_in, timeout=timeout,
-                         sleep_time=sleep_time, logger_name=logger_name, logging_level=logging_level)
+                         timeout_action=timeout_action, sleep_time=sleep_time,
+                         logger_name=logger_name, logging_level=logging_level)
         self.image_format = image_format
 
     def name(self) -> str:

@@ -9,8 +9,8 @@ Makes object detection predictions via Redis backend.
 usage: redis-predict-od [-h] [-l {DEBUG,INFO,WARNING,ERROR,CRITICAL}]
                         [-N LOGGER_NAME] [-H REDIS_HOST] [-p REDIS_PORT]
                         [-d REDIS_DB] [-o CHANNEL_OUT] [-i CHANNEL_IN]
-                        [-t TIMEOUT] [-s SLEEP_TIME] [--key_label KEY_LABEL]
-                        [--key_score KEY_SCORE]
+                        [-t TIMEOUT] [-a {drop,input}] [-s SLEEP_TIME]
+                        [--key_label KEY_LABEL] [--key_score KEY_SCORE]
 
 Makes object detection predictions via Redis backend.
 
@@ -37,6 +37,9 @@ optional arguments:
   -t TIMEOUT, --timeout TIMEOUT
                         The timeout in seconds to wait for a prediction to
                         arrive. (default: 5.0)
+  -a {drop,input}, --timeout_action {drop,input}
+                        The action to take when a timeout occurs. (default:
+                        drop)
   -s SLEEP_TIME, --sleep_time SLEEP_TIME
                         The time in seconds between polls. (default: 0.01)
   --key_label KEY_LABEL

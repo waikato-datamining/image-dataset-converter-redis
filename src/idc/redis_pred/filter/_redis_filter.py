@@ -21,6 +21,14 @@ class RedisFilterSession:
     pubsub_thread = None
 
 
+TIMEOUT_ACTION_DROP = "drop"
+TIMEOUT_ACTION_INPUT = "input"
+TIMEOUT_ACTIONS = [
+    TIMEOUT_ACTION_DROP,
+    TIMEOUT_ACTION_INPUT,
+]
+
+
 class AbstractRedisFilter(Filter):
     """
     Ancestor for redis-based filters.
@@ -28,7 +36,8 @@ class AbstractRedisFilter(Filter):
 
     def __init__(self, redis_host: str = None, redis_port: int = None, redis_db: int = None,
                  channel_out: str = None, channel_in: str = None, timeout: float = None,
-                 sleep_time: float = None,  logger_name: str = None, logging_level: str = LOGGING_WARNING):
+                 timeout_action: str = None, sleep_time: float = None,
+                 logger_name: str = None, logging_level: str = LOGGING_WARNING):
         """
         Initializes the filter.
 
@@ -44,6 +53,8 @@ class AbstractRedisFilter(Filter):
         :type channel_in: str
         :param timeout: the time in seconds to wait for predictions
         :type timeout: float
+        :param timeout_action: the action to take when a timeout happens
+        :type timeout_action: str
         :param sleep_time: the time in seconds between polls
         :type sleep_time: float
         :param logger_name: the name to use for the logger
@@ -58,6 +69,7 @@ class AbstractRedisFilter(Filter):
         self.channel_out = channel_out
         self.channel_in = channel_in
         self.timeout = timeout
+        self.timeout_action = timeout_action
         self.sleep_time = sleep_time
         self._redis_session = None
 
@@ -75,6 +87,7 @@ class AbstractRedisFilter(Filter):
         parser.add_argument("-o", "--channel_out", type=str, help="The Redis channel to send the images out.", default="images", required=False)
         parser.add_argument("-i", "--channel_in", type=str, help="The Redis channel to receive the predictions on.", default="predictions", required=False)
         parser.add_argument("-t", "--timeout", type=float, help="The timeout in seconds to wait for a prediction to arrive.", default=5.0, required=False)
+        parser.add_argument("-a", "--timeout_action", choices=TIMEOUT_ACTIONS, help="The action to take when a timeout occurs.", default=TIMEOUT_ACTION_DROP, required=False)
         parser.add_argument("-s", "--sleep_time", type=float, help="The time in seconds between polls.", default=0.01, required=False)
         return parser
 
@@ -92,6 +105,7 @@ class AbstractRedisFilter(Filter):
         self.channel_out = ns.channel_out
         self.channel_in = ns.channel_in
         self.timeout = ns.timeout
+        self.timeout_action = ns.timeout_action
         self.sleep_time = ns.sleep_time
 
     def initialize(self):
@@ -111,6 +125,8 @@ class AbstractRedisFilter(Filter):
             self.channel_in = "predictions"
         if self.timeout is None:
             self.timeout = 5.0
+        if self.timeout_action is None:
+            self.timeout_action = TIMEOUT_ACTION_DROP
         if self.sleep_time is None:
             self.sleep_time = 0.01
         self._redis_session = RedisFilterSession()
@@ -170,7 +186,13 @@ class AbstractRedisFilter(Filter):
                         break
 
             if no_data:
-                return
+                if self.timeout_action == TIMEOUT_ACTION_DROP:
+                    continue
+                elif self.timeout_action == TIMEOUT_ACTION_INPUT:
+                    result.append(item)
+                    continue
+                else:
+                    raise Exception("Unhandled timeout action: %s" % self.timeout_action)
             else:
                 end = datetime.now()
                 self.logger().info("Round trip time: %f sec" % (end - start).total_seconds())
@@ -182,5 +204,3 @@ class AbstractRedisFilter(Filter):
                 result.append(item_new)
 
         return flatten_list(result)
-
-

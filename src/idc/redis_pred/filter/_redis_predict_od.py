@@ -17,7 +17,8 @@ class ObjectDetectionRedisPredict(AbstractRedisFilter):
 
     def __init__(self, redis_host: str = None, redis_port: int = None, redis_db: int = None,
                  channel_out: str = None, channel_in: str = None, timeout: float = None,
-                 sleep_time: float = None, key_label: str = None, key_score: str = None,
+                 sleep_time: float = None, timeout_action: str = None,
+                 key_label: str = None, key_score: str = None,
                  logger_name: str = None, logging_level: str = LOGGING_WARNING):
         """
         Initializes the filter.
@@ -34,6 +35,8 @@ class ObjectDetectionRedisPredict(AbstractRedisFilter):
         :type channel_in: str
         :param timeout: the time in seconds to wait for predictions
         :type timeout: float
+        :param timeout_action: the action to take when a timeout happens
+        :type timeout_action: str
         :param sleep_time: the time in seconds between polls
         :type sleep_time: float
         :param key_label: the key in the meta-data for the label
@@ -47,7 +50,8 @@ class ObjectDetectionRedisPredict(AbstractRedisFilter):
         """
         super().__init__(redis_host=redis_host, redis_port=redis_port, redis_db=redis_db,
                          channel_out=channel_out, channel_in=channel_in, timeout=timeout,
-                         sleep_time=sleep_time, logger_name=logger_name, logging_level=logging_level)
+                         timeout_action=timeout_action, sleep_time=sleep_time,
+                         logger_name=logger_name, logging_level=logging_level)
         self.key_label = key_label
         self.key_score = key_score
 

@@ -9,7 +9,7 @@ Makes image segmentation predictions via Redis backend.
 usage: redis-predict-is [-h] [-l {DEBUG,INFO,WARNING,ERROR,CRITICAL}]
                         [-N LOGGER_NAME] [-H REDIS_HOST] [-p REDIS_PORT]
                         [-d REDIS_DB] [-o CHANNEL_OUT] [-i CHANNEL_IN]
-                        [-t TIMEOUT] [-s SLEEP_TIME]
+                        [-t TIMEOUT] [-a {drop,input}] [-s SLEEP_TIME]
                         [--image_format {indexedpng,bluechannel,grayscale}]
 
 Makes image segmentation predictions via Redis backend.
@@ -37,6 +37,9 @@ optional arguments:
   -t TIMEOUT, --timeout TIMEOUT
                         The timeout in seconds to wait for a prediction to
                         arrive. (default: 5.0)
+  -a {drop,input}, --timeout_action {drop,input}
+                        The action to take when a timeout occurs. (default:
+                        drop)
   -s SLEEP_TIME, --sleep_time SLEEP_TIME
                         The time in seconds between polls. (default: 0.01)
   --image_format {indexedpng,bluechannel,grayscale}
