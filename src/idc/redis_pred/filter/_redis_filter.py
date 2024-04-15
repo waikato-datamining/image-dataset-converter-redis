@@ -84,12 +84,30 @@ class AbstractRedisFilter(Filter):
         parser.add_argument("-H", "--redis_host", type=str, help="The Redis server to connect to.", default="localhost", required=False)
         parser.add_argument("-p", "--redis_port", type=int, help="The port the Redis server is running on.", default=6379, required=False)
         parser.add_argument("-d", "--redis_db", type=int, help="The database to use.", default=0, required=False)
-        parser.add_argument("-o", "--channel_out", type=str, help="The Redis channel to send the images out.", default="images", required=False)
-        parser.add_argument("-i", "--channel_in", type=str, help="The Redis channel to receive the predictions on.", default="predictions", required=False)
-        parser.add_argument("-t", "--timeout", type=float, help="The timeout in seconds to wait for a prediction to arrive.", default=5.0, required=False)
+        parser.add_argument("-o", "--channel_out", type=str, help="The Redis channel to send the data out.", default=self._default_channel_out(), required=False)
+        parser.add_argument("-i", "--channel_in", type=str, help="The Redis channel to receive the data on.", default=self._default_channel_in(), required=False)
+        parser.add_argument("-t", "--timeout", type=float, help="The timeout in seconds to wait for a data to arrive.", default=5.0, required=False)
         parser.add_argument("-a", "--timeout_action", choices=TIMEOUT_ACTIONS, help="The action to take when a timeout occurs.", default=TIMEOUT_ACTION_DROP, required=False)
         parser.add_argument("-s", "--sleep_time", type=float, help="The time in seconds between polls.", default=0.01, required=False)
         return parser
+
+    def _default_channel_out(self):
+        """
+        Returns the default channel for broadcasting the filtered data.
+
+        :return: the default channel
+        :rtype: str
+        """
+        return "data_out"
+
+    def _default_channel_in(self):
+        """
+        Returns the default channel for the incoming data.
+
+        :return: the default channel
+        :rtype: str
+        """
+        return "data_in"
 
     def _apply_args(self, ns: argparse.Namespace):
         """

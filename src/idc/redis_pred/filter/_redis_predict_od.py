@@ -82,6 +82,24 @@ class ObjectDetectionRedisPredict(AbstractRedisFilter):
         """
         return [ObjectDetectionData]
 
+    def _default_channel_out(self):
+        """
+        Returns the default channel for broadcasting the filtered data.
+
+        :return: the default channel
+        :rtype: str
+        """
+        return "images"
+
+    def _default_channel_in(self):
+        """
+        Returns the default channel for the incoming data.
+
+        :return: the default channel
+        :rtype: str
+        """
+        return "predictions"
+
     def generates(self) -> List:
         """
         Returns the list of classes that get produced.

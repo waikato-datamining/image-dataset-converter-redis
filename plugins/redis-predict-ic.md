@@ -28,14 +28,14 @@ optional arguments:
   -d REDIS_DB, --redis_db REDIS_DB
                         The database to use. (default: 0)
   -o CHANNEL_OUT, --channel_out CHANNEL_OUT
-                        The Redis channel to send the images out. (default:
+                        The Redis channel to send the data out. (default:
                         images)
   -i CHANNEL_IN, --channel_in CHANNEL_IN
-                        The Redis channel to receive the predictions on.
-                        (default: predictions)
+                        The Redis channel to receive the data on. (default:
+                        predictions)
   -t TIMEOUT, --timeout TIMEOUT
-                        The timeout in seconds to wait for a prediction to
-                        arrive. (default: 5.0)
+                        The timeout in seconds to wait for a data to arrive.
+                        (default: 5.0)
   -a {drop,input}, --timeout_action {drop,input}
                         The action to take when a timeout occurs. (default:
                         drop)
