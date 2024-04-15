@@ -138,9 +138,9 @@ class AbstractRedisFilter(Filter):
         if self.redis_db is None:
             self.redis_db = 0
         if self.channel_out is None:
-            self.channel_out = "images"
+            self.channel_out = self._default_channel_out()
         if self.channel_in is None:
-            self.channel_in = "predictions"
+            self.channel_in = self._default_channel_in()
         if self.timeout is None:
             self.timeout = 5.0
         if self.timeout_action is None:
