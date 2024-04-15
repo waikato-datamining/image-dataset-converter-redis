@@ -7,10 +7,10 @@ from wai.common.geometry import Polygon, Point
 from wai.logging import LOGGING_WARNING
 
 from idc.api import ObjectDetectionData
-from idc.redis_pred.filter._redis_predict import AbstractRedisPredict
+from idc.redis_pred.filter._redis_filter import AbstractRedisFilter
 
 
-class ObjectDetectionRedisPredict(AbstractRedisPredict):
+class ObjectDetectionRedisPredict(AbstractRedisFilter):
     """
     Ancestor for filters that perform predictions via Redis.
     """
@@ -120,15 +120,15 @@ class ObjectDetectionRedisPredict(AbstractRedisPredict):
         if self.key_score is None:
             self.key_score = "score"
 
-    def _process_predictions(self, item: ObjectDetectionData, prediction):
+    def _process_data(self, item: ObjectDetectionData, data):
         """
-        For processing the predictions.
+        For processing the received data.
 
         :param item: the image data that was sent via redis
-        :param prediction: the received prediction data
+        :param data: the received data
         :return: the generated output data
         """
-        oobjects = ObjectPredictions.from_json_string(prediction)
+        oobjects = ObjectPredictions.from_json_string(data)
         lobjects = []
         for oobject in oobjects.objects:
             # bbox

@@ -21,9 +21,9 @@ class RedisConnection:
     pubsub_thread = None
 
 
-class AbstractRedisPredict(Filter):
+class AbstractRedisFilter(Filter):
     """
-    Ancestor for filters that perform predictions via Redis.
+    Ancestor for redis-based filters.
     """
 
     def __init__(self, redis_host: str = None, redis_port: int = None, redis_db: int = None,
@@ -120,12 +120,12 @@ class AbstractRedisPredict(Filter):
         self._redis_conn.timeout = self.timeout
         self._redis_conn.data = None
 
-    def _process_predictions(self, item, prediction):
+    def _process_data(self, item, data):
         """
-        For processing the predictions.
+        For processing the received data.
 
         :param item: the image data that was sent via redis
-        :param prediction: the received prediction data
+        :param data: the received data
         :return: the generated output data
         """
         raise NotImplementedError()
@@ -175,8 +175,8 @@ class AbstractRedisPredict(Filter):
                 end = datetime.now()
                 self.logger().info("Round trip time: %f sec" % (end - start).total_seconds())
 
-            # process predictions
-            item_new = self._process_predictions(item, self._redis_conn.data)
+            # process data
+            item_new = self._process_data(item, self._redis_conn.data)
 
             if item_new is not None:
                 result.append(item_new)

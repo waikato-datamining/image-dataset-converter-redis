@@ -4,10 +4,10 @@ from typing import List
 from wai.logging import LOGGING_WARNING
 
 from idc.api import ImageClassificationData
-from idc.redis_pred.filter._redis_predict import AbstractRedisPredict
+from idc.redis_pred.filter._redis_filter import AbstractRedisFilter
 
 
-class ImageClassificationRedisPredict(AbstractRedisPredict):
+class ImageClassificationRedisPredict(AbstractRedisFilter):
     """
     Ancestor for filters that perform predictions via Redis.
     """
@@ -77,16 +77,16 @@ class ImageClassificationRedisPredict(AbstractRedisPredict):
         """
         return [ImageClassificationData]
 
-    def _process_predictions(self, item: ImageClassificationData, prediction):
+    def _process_data(self, item: ImageClassificationData, data):
         """
-        For processing the predictions.
+        For processing the received data.
 
         :param item: the image data that was sent via redis
-        :param prediction: the received prediction data
+        :param data: the received data
         :return: the generated output data
         """
         # convert to wai.annotations annotations
-        preds = json.loads(prediction)
+        preds = json.loads(data)
         max_key = None
         max_value = 0.0
         for k in preds:

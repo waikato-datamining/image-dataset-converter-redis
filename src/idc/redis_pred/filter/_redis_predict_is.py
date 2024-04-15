@@ -6,7 +6,7 @@ from PIL import Image
 from wai.logging import LOGGING_WARNING
 
 from idc.api import ImageSegmentationData, from_bluechannel, from_grayscale, from_indexedpng
-from idc.redis_pred.filter._redis_predict import AbstractRedisPredict
+from idc.redis_pred.filter._redis_filter import AbstractRedisFilter
 
 FORMAT_INDEXEDPNG = "indexedpng"
 FORMAT_BLUECHANNEL = "bluechannel"
@@ -18,7 +18,7 @@ FORMATS = [
 ]
 
 
-class ImageSegmentationRedisPredict(AbstractRedisPredict):
+class ImageSegmentationRedisPredict(AbstractRedisFilter):
     """
     Ancestor for filters that perform predictions via Redis.
     """
@@ -139,12 +139,12 @@ class ImageSegmentationRedisPredict(AbstractRedisPredict):
         else:
             return img.resize((width, height), Image.Resampling.BILINEAR)
 
-    def _process_predictions(self, item: ImageSegmentationData, prediction):
+    def _process_data(self, item: ImageSegmentationData, data):
         """
-        For processing the predictions.
+        For processing the received data.
 
         :param item: the image data that was sent via redis
-        :param prediction: the received prediction data
+        :param data: the received data
         :return: the generated output data
         """
         w = item.image_width
@@ -155,7 +155,7 @@ class ImageSegmentationRedisPredict(AbstractRedisPredict):
             label_mapping[i] = label
 
         # convert received image to indices
-        image = self._fix_size(Image.open(io.BytesIO(prediction)), w, h)
+        image = self._fix_size(Image.open(io.BytesIO(data)), w, h)
         if self.image_format == FORMAT_INDEXEDPNG:
             annotations = from_indexedpng(image, item.annotation.labels, label_mapping, self.logger())
         elif self.image_format == FORMAT_BLUECHANNEL:
