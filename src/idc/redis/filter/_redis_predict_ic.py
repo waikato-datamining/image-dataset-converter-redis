@@ -4,10 +4,10 @@ from typing import List
 from wai.logging import LOGGING_WARNING
 
 from idc.api import ImageClassificationData
-from ._redis_filter import AbstractRedisFilter
+from ._redis_pubsub_filter import AbstractRedisPubSubFilter
 
 
-class ImageClassificationRedisPredict(AbstractRedisFilter):
+class ImageClassificationRedisPredict(AbstractRedisPubSubFilter):
     """
     Ancestor for filters that perform predictions via Redis.
     """

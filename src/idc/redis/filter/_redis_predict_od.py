@@ -7,10 +7,10 @@ from wai.common.geometry import Polygon, Point
 from wai.logging import LOGGING_WARNING
 
 from idc.api import ObjectDetectionData
-from ._redis_filter import AbstractRedisFilter
+from ._redis_pubsub_filter import AbstractRedisPubSubFilter
 
 
-class ObjectDetectionRedisPredict(AbstractRedisFilter):
+class ObjectDetectionRedisPredict(AbstractRedisPubSubFilter):
     """
     Ancestor for filters that perform predictions via Redis.
     """

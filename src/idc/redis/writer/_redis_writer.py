@@ -1,21 +1,21 @@
 import argparse
 
 import redis
-from seppl.io import Filter
 from wai.logging import LOGGING_WARNING
 
+from idc.api import StreamWriter
 from idc.redis.core import RedisSession
 
 
-class AbstractRedisFilter(Filter):
+class AbstractRedisStreamWriter(StreamWriter):
     """
-    Ancestor for redis-based filters.
+    Ancestor for redis-based writers.
     """
 
     def __init__(self, redis_host: str = None, redis_port: int = None, redis_db: int = None,
                  logger_name: str = None, logging_level: str = LOGGING_WARNING):
         """
-        Initializes the filter.
+        Initializes the writer.
 
         :param redis_host: the redis host to use
         :type redis_host: str

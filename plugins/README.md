@@ -1,8 +1,11 @@
-# redis-predictions plugins
+# redis plugins
 ## Readers
-* [redis-listen-data](redis-listen-data.md)
+* [redis-listen-image](redis-listen-image.md)
 
 ## Filters
 * [redis-predict-ic](redis-predict-ic.md)
 * [redis-predict-is](redis-predict-is.md)
 * [redis-predict-od](redis-predict-od.md)
+
+## Writers
+* [redis-data-broadcast](redis-data-broadcast.md)

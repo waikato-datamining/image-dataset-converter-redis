@@ -6,10 +6,10 @@ from PIL import Image
 from wai.logging import LOGGING_WARNING
 
 from idc.api import DATATYPES, data_type_to_class, ImageData
-from ._redis_reader import AbstractRedisReader
+from ._redis_listener import AbstractRedisListener
 
 
-class RedisDataReader(AbstractRedisReader):
+class RedisImageReader(AbstractRedisListener):
 
     def __init__(self, redis_host: str = None, redis_port: int = None, redis_db: int = None,
                  channel_in: str = None, timeout: float = None, timeout_action: str = None,
@@ -54,7 +54,7 @@ class RedisDataReader(AbstractRedisReader):
         :return: the name
         :rtype: str
         """
-        return "redis-listen-data"
+        return "redis-listen-image"
 
     def description(self) -> str:
         """

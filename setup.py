@@ -44,5 +44,8 @@ setup(
         "idc.filters": [
             "idc_redis_filters1=idc.redis.filter:seppl.io.Filter",
         ],
+        "idc.writers": [
+            "idc_redis_writers1=idc.redis.writer:seppl.io.Writer",
+        ],
     },
 )

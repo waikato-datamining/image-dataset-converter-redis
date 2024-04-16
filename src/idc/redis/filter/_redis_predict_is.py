@@ -6,7 +6,7 @@ from PIL import Image
 from wai.logging import LOGGING_WARNING
 
 from idc.api import ImageSegmentationData, from_bluechannel, from_grayscale, from_indexedpng
-from ._redis_filter import AbstractRedisFilter
+from ._redis_pubsub_filter import AbstractRedisPubSubFilter
 
 FORMAT_INDEXEDPNG = "indexedpng"
 FORMAT_BLUECHANNEL = "bluechannel"
@@ -18,7 +18,7 @@ FORMATS = [
 ]
 
 
-class ImageSegmentationRedisPredict(AbstractRedisFilter):
+class ImageSegmentationRedisPredict(AbstractRedisPubSubFilter):
     """
     Ancestor for filters that perform predictions via Redis.
     """
