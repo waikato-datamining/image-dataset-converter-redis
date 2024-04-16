@@ -13,8 +13,8 @@ from idc.api import flatten_list, make_list
 @dataclass
 class RedisFilterSession:
     connection: redis.Redis = None
-    channel_out: str = "images"
-    channel_in: str = "predictions"
+    channel_out: str = "data_out"
+    channel_in: str = "data_in"
     timeout: float = 5.0
     data = None
     pubsub = None
@@ -49,9 +49,9 @@ class AbstractRedisFilter(Filter):
         :type redis_db: int
         :param channel_out: the channel to send the images to
         :type channel_out: str
-        :param channel_in: the channel to receive the predictions on
+        :param channel_in: the channel to receive the data on
         :type channel_in: str
-        :param timeout: the time in seconds to wait for predictions
+        :param timeout: the time in seconds to wait for data
         :type timeout: float
         :param timeout_action: the action to take when a timeout happens
         :type timeout_action: str
