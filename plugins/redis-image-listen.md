@@ -1,11 +1,11 @@
-# redis-listen-image
+# redis-image-listen
 
 * generates: idc.api.ImageData
 
 Listens for images being broadcast and forwards them as the specified data type.
 
 ```
-usage: redis-listen-image [-h] [-l {DEBUG,INFO,WARNING,ERROR,CRITICAL}]
+usage: redis-image-listen [-h] [-l {DEBUG,INFO,WARNING,ERROR,CRITICAL}]
                           [-N LOGGER_NAME] [-H REDIS_HOST] [-p REDIS_PORT]
                           [-d REDIS_DB] [-i CHANNEL_IN] [-t TIMEOUT]
                           [-a {keep-waiting,stop}] [-s SLEEP_TIME] -T

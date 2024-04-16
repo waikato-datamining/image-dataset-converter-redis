@@ -1,6 +1,6 @@
 # redis plugins
 ## Readers
-* [redis-listen-image](redis-listen-image.md)
+* [redis-image-listen](redis-image-listen.md)
 
 ## Filters
 * [redis-predict-ic](redis-predict-ic.md)

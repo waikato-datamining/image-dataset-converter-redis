@@ -54,7 +54,7 @@ class RedisImageReader(AbstractRedisListener):
         :return: the name
         :rtype: str
         """
-        return "redis-listen-image"
+        return "redis-image-listen"
 
     def description(self) -> str:
         """
