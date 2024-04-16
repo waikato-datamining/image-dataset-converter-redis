@@ -19,6 +19,7 @@ class RedisReaderSession:
     pubsub = None
     pubsub_thread = None
 
+
 TIMEOUT_ACTION_KEEP_WAITING = "keep-waiting"
 TIMEOUT_ACTION_STOP = "stop"
 TIMEOUT_ACTIONS = [
