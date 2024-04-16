@@ -5,10 +5,9 @@ from time import sleep
 from typing import Iterable
 
 import redis
-from idc.api import Reader
 from wai.logging import LOGGING_WARNING
 
-from idc.api import flatten_list, make_list
+from idc.api import Reader
 
 
 @dataclass
