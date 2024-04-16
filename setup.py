@@ -13,12 +13,12 @@ def _read(f):
 
 
 setup(
-    name="image-dataset-converter-redis-predictions",
-    description="Support for making predictions via Redis backend for the image-dataset-converter library.",
+    name="image-dataset-converter-redis",
+    description="Redis integration for the image-dataset-converter library.",
     long_description=(
             _read('DESCRIPTION.rst') + b'\n' +
             _read('CHANGES.rst')).decode('utf-8'),
-    url="https://github.com/waikato-datamining/image-dataset-converter-redis-predictions",
+    url="https://github.com/waikato-datamining/image-dataset-converter-redis",
     classifiers=[
         'Development Status :: 4 - Beta',
         'License :: OSI Approved :: MIT License',
@@ -39,10 +39,10 @@ setup(
     author_email='fracpete@waikato.ac.nz',
     entry_points={
         "idc.readers": [
-            "idc_redis_pred_readers1=idc.redis_pred.reader:seppl.io.Reader",
+            "idc_redis_readers1=idc.redis.reader:seppl.io.Reader",
         ],
         "idc.filters": [
-            "idc_redis_pred_filters1=idc.redis_pred.filter:seppl.io.Filter",
+            "idc_redis_filters1=idc.redis.filter:seppl.io.Filter",
         ],
     },
 )
