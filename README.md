@@ -1,7 +1,7 @@
-# image-dataset-converter-redis-predictions
-Support for making predictions via Redis backend for the image-dataset-converter library.
+# image-dataset-converter-redis
+Redis integration for the image-dataset-converter library.
 
-Docker images for Deep learning frameworks with Redis support are available from here:
+For making predictions, Docker images for Deep learning frameworks with Redis support are available from here:
 
 https://www.data-mining.co.nz/docker-images/
 
@@ -10,13 +10,13 @@ https://www.data-mining.co.nz/docker-images/
 Via PyPI:
 
 ```bash
-pip install image-dataset-converter-redis-predictions
+pip install image-dataset-converter-redis
 ```
 
 The latest code straight from the repository:
 
 ```bash
-pip install git+https://github.com/waikato-datamining/image-dataset-converter-redis-predictions.git
+pip install git+https://github.com/waikato-datamining/image-dataset-converter-redis.git
 ```
 
 
