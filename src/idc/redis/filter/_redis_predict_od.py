@@ -1,31 +1,24 @@
 import argparse
-import io
 from typing import List
 
-from PIL import Image
+from opex import ObjectPredictions
+from wai.common.adams.imaging.locateobjects import LocatedObjects, LocatedObject
+from wai.common.geometry import Polygon, Point
 from wai.logging import LOGGING_WARNING
 
-from idc.api import ImageSegmentationData, from_bluechannel, from_grayscale, from_indexedpng
-from idc.redis_pred.filter._redis_filter import AbstractRedisFilter
-
-FORMAT_INDEXEDPNG = "indexedpng"
-FORMAT_BLUECHANNEL = "bluechannel"
-FORMAT_GRAYSCALE = "grayscale"
-FORMATS = [
-    FORMAT_INDEXEDPNG,
-    FORMAT_BLUECHANNEL,
-    FORMAT_GRAYSCALE,
-]
+from idc.api import ObjectDetectionData
+from ._redis_filter import AbstractRedisFilter
 
 
-class ImageSegmentationRedisPredict(AbstractRedisFilter):
+class ObjectDetectionRedisPredict(AbstractRedisFilter):
     """
     Ancestor for filters that perform predictions via Redis.
     """
 
     def __init__(self, redis_host: str = None, redis_port: int = None, redis_db: int = None,
                  channel_out: str = None, channel_in: str = None, timeout: float = None,
-                 timeout_action: str = None, sleep_time: float = None, image_format: str = None,
+                 sleep_time: float = None, timeout_action: str = None,
+                 key_label: str = None, key_score: str = None,
                  logger_name: str = None, logging_level: str = LOGGING_WARNING):
         """
         Initializes the filter.
@@ -46,8 +39,10 @@ class ImageSegmentationRedisPredict(AbstractRedisFilter):
         :type timeout_action: str
         :param sleep_time: the time in seconds between polls
         :type sleep_time: float
-        :param image_format: the format of the predictions
-        :type image_format: str
+        :param key_label: the key in the meta-data for the label
+        :type key_label: str
+        :param key_score: the key in the meta-data for the score
+        :type key_score: str
         :param logger_name: the name to use for the logger
         :type logger_name: str
         :param logging_level: the logging level to use
@@ -57,7 +52,8 @@ class ImageSegmentationRedisPredict(AbstractRedisFilter):
                          channel_out=channel_out, channel_in=channel_in, timeout=timeout,
                          timeout_action=timeout_action, sleep_time=sleep_time,
                          logger_name=logger_name, logging_level=logging_level)
-        self.image_format = image_format
+        self.key_label = key_label
+        self.key_score = key_score
 
     def name(self) -> str:
         """
@@ -66,7 +62,7 @@ class ImageSegmentationRedisPredict(AbstractRedisFilter):
         :return: the name
         :rtype: str
         """
-        return "redis-predict-is"
+        return "redis-predict-od"
 
     def description(self) -> str:
         """
@@ -75,7 +71,16 @@ class ImageSegmentationRedisPredict(AbstractRedisFilter):
         :return: the description
         :rtype: str
         """
-        return "Makes image segmentation predictions via Redis backend."
+        return "Makes object detection predictions via Redis backend."
+
+    def accepts(self) -> List:
+        """
+        Returns the list of classes that are accepted.
+
+        :return: the list of classes
+        :rtype: list
+        """
+        return [ObjectDetectionData]
 
     def _default_channel_out(self):
         """
@@ -95,15 +100,6 @@ class ImageSegmentationRedisPredict(AbstractRedisFilter):
         """
         return "predictions"
 
-    def accepts(self) -> List:
-        """
-        Returns the list of classes that are accepted.
-
-        :return: the list of classes
-        :rtype: list
-        """
-        return [ImageSegmentationData]
-
     def generates(self) -> List:
         """
         Returns the list of classes that get produced.
@@ -111,7 +107,7 @@ class ImageSegmentationRedisPredict(AbstractRedisFilter):
         :return: the list of classes
         :rtype: list
         """
-        return [ImageSegmentationData]
+        return [ObjectDetectionData]
 
     def _create_argparser(self) -> argparse.ArgumentParser:
         """
@@ -121,7 +117,8 @@ class ImageSegmentationRedisPredict(AbstractRedisFilter):
         :rtype: argparse.ArgumentParser
         """
         parser = super()._create_argparser()
-        parser.add_argument("--image_format", choices=FORMATS, help="The image format of the predictions.", default=FORMAT_INDEXEDPNG, required=False)
+        parser.add_argument("--key_label", type=str, help="The key in the metadata for the storing the label.", default="type", required=False)
+        parser.add_argument("--key_score", type=str, help="The key in the metadata for the storing the score.", default="score", required=False)
         return parser
 
     def _apply_args(self, ns: argparse.Namespace):
@@ -132,35 +129,20 @@ class ImageSegmentationRedisPredict(AbstractRedisFilter):
         :type ns: argparse.Namespace
         """
         super()._apply_args(ns)
-        self.image_format = ns.image_format
+        self.key_label = ns.key_label
+        self.key_score = ns.key_score
 
     def initialize(self):
         """
         Initializes the processing, e.g., for opening files or databases.
         """
         super().initialize()
-        if self.image_format is None:
-            self.image_format = FORMAT_INDEXEDPNG
+        if self.key_label is None:
+            self.key_label = "type"
+        if self.key_score is None:
+            self.key_score = "score"
 
-    def _fix_size(self, img, width, height):
-        """
-        Fixes the size of the received image, if necessary.
-
-        :param img: the to resize
-        :type img: Image.Image
-        :param width: the required width
-        :type width: int
-        :param height: the required height
-        :type height: int
-        :return: the (potentially) resized image
-        :rtype: Image.Image
-        """
-        if (img.width == width) and (img.height == height):
-            return img
-        else:
-            return img.resize((width, height), Image.Resampling.BILINEAR)
-
-    def _process_data(self, item: ImageSegmentationData, data):
+    def _process_data(self, item: ObjectDetectionData, data):
         """
         For processing the received data.
 
@@ -168,23 +150,35 @@ class ImageSegmentationRedisPredict(AbstractRedisFilter):
         :param data: the received data
         :return: the generated output data
         """
-        w = item.image_width
-        h = item.image_height
+        oobjects = ObjectPredictions.from_json_string(data)
+        lobjects = []
+        for oobject in oobjects.objects:
+            # bbox
+            obbox = oobject.bbox
+            x = obbox.left
+            y = obbox.top
+            w = obbox.right - obbox.left + 1
+            h = obbox.bottom - obbox.top + 1
 
-        label_mapping = dict()
-        for i, label in enumerate(item.annotation.labels):
-            label_mapping[i] = label
+            # polygon
+            opoly = oobject.polygon
+            lpoints = []
+            for opoint in opoly.points:
+                lpoints.append(Point(x=opoint[0], y=opoint[1]))
+            lpoly = Polygon(*lpoints)
 
-        # convert received image to indices
-        image = self._fix_size(Image.open(io.BytesIO(data)), w, h)
-        if self.image_format == FORMAT_INDEXEDPNG:
-            annotations = from_indexedpng(image, item.annotation.labels, label_mapping, self.logger())
-        elif self.image_format == FORMAT_BLUECHANNEL:
-            annotations = from_bluechannel(image, item.annotation.labels, label_mapping, self.logger())
-        elif self.image_format == FORMAT_GRAYSCALE:
-            annotations = from_grayscale(image, item.annotation.labels, label_mapping, self.logger())
-        else:
-            raise Exception("Unsupported image format: %s" % self.image_format)
+            # metadata
+            metadata = dict()
+            if hasattr(oobject, "score"):
+                metadata[self.key_score] = oobject.score
+            metadata[self.key_label] = oobject.label
 
-        return ImageSegmentationData(source=item.source, data=item.data, annotation=annotations,
-                                     metadata=item.get_metadata())
+            # add object
+            located_object = LocatedObject(x, y, w, h, **metadata)
+            located_object.set_polygon(lpoly)
+            lobjects.append(located_object)
+
+        annotations = LocatedObjects(lobjects)
+
+        return ObjectDetectionData(source=item.source, data=item.data, annotation=annotations,
+                                   metadata=item.get_metadata())

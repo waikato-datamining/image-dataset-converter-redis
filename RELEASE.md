@@ -27,7 +27,7 @@ Steps:
 
 * start new release (version: `vX.Y.Z`)
 * enter release notes, i.e., significant changes since last release
-* upload `image-dataset-converter-imgaug-X.Y.Z.tar.gz` previously generated with `setyp.py`
+* upload `image-dataset-converter-redis-X.Y.Z.tar.gz` previously generated with `setyp.py`
 * publish
 
 
