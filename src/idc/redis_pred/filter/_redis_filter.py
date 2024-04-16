@@ -86,7 +86,7 @@ class AbstractRedisFilter(Filter):
         parser.add_argument("-d", "--redis_db", type=int, help="The database to use.", default=0, required=False)
         parser.add_argument("-o", "--channel_out", type=str, help="The Redis channel to send the data out.", default=self._default_channel_out(), required=False)
         parser.add_argument("-i", "--channel_in", type=str, help="The Redis channel to receive the data on.", default=self._default_channel_in(), required=False)
-        parser.add_argument("-t", "--timeout", type=float, help="The timeout in seconds to wait for a data to arrive.", default=5.0, required=False)
+        parser.add_argument("-t", "--timeout", type=float, help="The timeout in seconds to wait for a data to arrive.", default=self._default_timeout(), required=False)
         parser.add_argument("-a", "--timeout_action", choices=TIMEOUT_ACTIONS, help="The action to take when a timeout occurs.", default=TIMEOUT_ACTION_DROP, required=False)
         parser.add_argument("-s", "--sleep_time", type=float, help="The time in seconds between polls.", default=0.01, required=False)
         return parser
@@ -108,6 +108,15 @@ class AbstractRedisFilter(Filter):
         :rtype: str
         """
         return "data_in"
+
+    def _default_timeout(self):
+        """
+        Returns the default timeout to use.
+
+        :return: the default timeout in seconds
+        :rtype: float
+        """
+        return 5.0
 
     def _apply_args(self, ns: argparse.Namespace):
         """
@@ -142,7 +151,7 @@ class AbstractRedisFilter(Filter):
         if self.channel_in is None:
             self.channel_in = self._default_channel_in()
         if self.timeout is None:
-            self.timeout = 5.0
+            self.timeout = self._default_timeout()
         if self.timeout_action is None:
             self.timeout_action = TIMEOUT_ACTION_DROP
         if self.sleep_time is None:
