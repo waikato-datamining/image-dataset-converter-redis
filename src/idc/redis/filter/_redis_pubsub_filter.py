@@ -163,7 +163,7 @@ class AbstractRedisPubSubFilter(AbstractRedisFilter):
                 self._redis_session.pubsub = None
 
             self._redis_session.pubsub = self._redis_session.connection.pubsub()
-            self._redis_session.pubsub.psubscribe(**{self._redis_session.channel_out: anon_handler})
+            self._redis_session.pubsub.psubscribe(**{self._redis_session.channel_in: anon_handler})
             self._redis_session.pubsub_thread = self._redis_session.pubsub.run_in_thread(sleep_time=self.sleep_time)
             self._redis_session.connection.publish(self._redis_session.channel_out, item.image_bytes)
 
