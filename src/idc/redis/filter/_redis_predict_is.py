@@ -25,7 +25,8 @@ class ImageSegmentationRedisPredict(AbstractRedisPubSubFilter):
 
     def __init__(self, redis_host: str = None, redis_port: int = None, redis_db: int = None,
                  channel_out: str = None, channel_in: str = None, timeout: float = None,
-                 timeout_action: str = None, sleep_time: float = None, image_format: str = None,
+                 timeout_action: str = None, sleep_time: float = None,
+                 image_format: str = None, labels: List[str] = None,
                  logger_name: str = None, logging_level: str = LOGGING_WARNING):
         """
         Initializes the filter.
@@ -48,6 +49,8 @@ class ImageSegmentationRedisPredict(AbstractRedisPubSubFilter):
         :type sleep_time: float
         :param image_format: the format of the predictions
         :type image_format: str
+        :param labels: the list of labels
+        :type labels: list
         :param logger_name: the name to use for the logger
         :type logger_name: str
         :param logging_level: the logging level to use
@@ -58,6 +61,7 @@ class ImageSegmentationRedisPredict(AbstractRedisPubSubFilter):
                          timeout_action=timeout_action, sleep_time=sleep_time,
                          logger_name=logger_name, logging_level=logging_level)
         self.image_format = image_format
+        self.labels = labels
 
     def name(self) -> str:
         """
@@ -122,6 +126,7 @@ class ImageSegmentationRedisPredict(AbstractRedisPubSubFilter):
         """
         parser = super()._create_argparser()
         parser.add_argument("--image_format", choices=FORMATS, help="The image format of the predictions.", default=FORMAT_INDEXEDPNG, required=False)
+        parser.add_argument("--labels", metavar="LABEL", type=str, default=None, help="The labels that the indices represent.", nargs="+")
         return parser
 
     def _apply_args(self, ns: argparse.Namespace):
@@ -133,6 +138,7 @@ class ImageSegmentationRedisPredict(AbstractRedisPubSubFilter):
         """
         super()._apply_args(ns)
         self.image_format = ns.image_format
+        self.labels = ns.labels
 
     def initialize(self):
         """
@@ -141,6 +147,8 @@ class ImageSegmentationRedisPredict(AbstractRedisPubSubFilter):
         super().initialize()
         if self.image_format is None:
             self.image_format = FORMAT_INDEXEDPNG
+        if self.labels is None:
+            raise Exception("No labels defined!")
 
     def _fix_size(self, img, width, height):
         """
@@ -172,17 +180,17 @@ class ImageSegmentationRedisPredict(AbstractRedisPubSubFilter):
         h = item.image_height
 
         label_mapping = dict()
-        for i, label in enumerate(item.annotation.labels):
+        for i, label in enumerate(self.labels):
             label_mapping[i] = label
 
         # convert received image to indices
         image = self._fix_size(Image.open(io.BytesIO(data)), w, h)
         if self.image_format == FORMAT_INDEXEDPNG:
-            annotations = from_indexedpng(image, item.annotation.labels, label_mapping, self.logger())
+            annotations = from_indexedpng(image, self.labels, label_mapping, self.logger())
         elif self.image_format == FORMAT_BLUECHANNEL:
-            annotations = from_bluechannel(image, item.annotation.labels, label_mapping, self.logger())
+            annotations = from_bluechannel(image, self.labels, label_mapping, self.logger())
         elif self.image_format == FORMAT_GRAYSCALE:
-            annotations = from_grayscale(image, item.annotation.labels, label_mapping, self.logger())
+            annotations = from_grayscale(image, self.labels, label_mapping, self.logger())
         else:
             raise Exception("Unsupported image format: %s" % self.image_format)
 

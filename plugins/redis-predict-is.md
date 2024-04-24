@@ -11,6 +11,7 @@ usage: redis-predict-is [-h] [-l {DEBUG,INFO,WARNING,ERROR,CRITICAL}]
                         [-d REDIS_DB] [-o CHANNEL_OUT] [-i CHANNEL_IN]
                         [-t TIMEOUT] [-a {drop,input}] [-s SLEEP_TIME]
                         [--image_format {indexedpng,bluechannel,grayscale}]
+                        [--labels LABEL [LABEL ...]]
 
 Makes image segmentation predictions via Redis backend.
 
@@ -45,4 +46,6 @@ optional arguments:
   --image_format {indexedpng,bluechannel,grayscale}
                         The image format of the predictions. (default:
                         indexedpng)
+  --labels LABEL [LABEL ...]
+                        The labels that the indices represent. (default: None)
 ```
