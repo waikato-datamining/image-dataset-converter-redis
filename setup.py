@@ -38,14 +38,8 @@ setup(
     author='Peter Reutemann',
     author_email='fracpete@waikato.ac.nz',
     entry_points={
-        "idc.readers": [
-            "idc_redis_readers1=idc.redis.reader:seppl.io.Reader",
-        ],
-        "idc.filters": [
-            "idc_redis_filters1=idc.redis.filter:seppl.io.Filter",
-        ],
-        "idc.writers": [
-            "idc_redis_writers1=idc.redis.writer:seppl.io.Writer",
+        "class_lister": [
+            "idc.redis=idc.redis.class_lister",
         ],
     },
 )
