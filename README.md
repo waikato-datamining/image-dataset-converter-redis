@@ -1,5 +1,5 @@
 # image-dataset-converter-redis
-Redis integration for the image-dataset-converter library.
+Redis integration for the [image-dataset-converter](https://github.com/waikato-datamining/image-dataset-converter) library.
 
 For making predictions, Docker images for Deep learning frameworks with Redis support are available from here:
 
