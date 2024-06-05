@@ -175,7 +175,7 @@ class AbstractRedisPubSubFilter(AbstractRedisFilter):
                 end = datetime.now()
                 if self._redis_session.timeout > 0:
                     if (end - start).total_seconds() >= self._redis_session.timeout:
-                        self.logger().info("Timeout reached!")
+                        self.logger().warning("Timeout reached!")
                         no_data = True
                         self._redis_session.pubsub_thread.stop()
                         self._redis_session.pubsub_thread = None
