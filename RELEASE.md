@@ -31,3 +31,7 @@ Steps:
 * publish
 
 
+image-dataset-converter-all
+===========================
+
+* increment minimum version to newly released one in `setup.py`
