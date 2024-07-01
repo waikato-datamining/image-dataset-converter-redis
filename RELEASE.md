@@ -35,3 +35,4 @@ image-dataset-converter-all
 ===========================
 
 * increment minimum version to newly released one in `setup.py`
+* add note to `CHANGES.rst`
