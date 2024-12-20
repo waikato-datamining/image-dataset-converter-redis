@@ -13,7 +13,7 @@ def _read(f):
 
 
 setup(
-    name="image-dataset-converter-redis",
+    name="image_dataset_converter_redis",
     description="Redis integration for the image-dataset-converter library.",
     long_description=(
             _read('DESCRIPTION.rst') + b'\n' +
@@ -31,7 +31,7 @@ setup(
     },
     packages=find_namespace_packages(where='src'),
     install_requires=[
-        "image-dataset-converter",
+        "image_dataset_converter",
         "redis",
     ],
     version="0.0.2",
