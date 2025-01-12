@@ -10,7 +10,7 @@ https://www.data-mining.co.nz/docker-images/
 Via PyPI:
 
 ```bash
-pip install image-dataset-converter-redis
+pip install image_dataset_converter_redis
 ```
 
 The latest code straight from the repository:
