@@ -14,7 +14,7 @@ usage: redis-image-listen [-h] [-l {DEBUG,INFO,WARNING,ERROR,CRITICAL}]
 Listens for images being broadcast and forwards them as the specified data
 type.
 
-optional arguments:
+options:
   -h, --help            show this help message and exit
   -l {DEBUG,INFO,WARNING,ERROR,CRITICAL}, --logging_level {DEBUG,INFO,WARNING,ERROR,CRITICAL}
                         The logging level to use. (default: WARN)
