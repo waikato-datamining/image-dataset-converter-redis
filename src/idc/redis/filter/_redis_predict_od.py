@@ -71,7 +71,7 @@ class ObjectDetectionRedisPredict(AbstractRedisPubSubFilter):
         :return: the description
         :rtype: str
         """
-        return "Makes object detection predictions via Redis backend."
+        return "Makes object detection predictions in OPEX format via Redis backend."
 
     def accepts(self) -> List:
         """

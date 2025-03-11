@@ -5,6 +5,7 @@ Changelog
 ------------------
 
 - switched to underscores in project name
+- `redis-predict-od` info clarifies that predictions are made in OPEX format
 
 
 0.0.2 (2024-06-13)

@@ -3,7 +3,7 @@
 * accepts: idc.api.ObjectDetectionData
 * generates: idc.api.ObjectDetectionData
 
-Makes object detection predictions via Redis backend.
+Makes object detection predictions in OPEX format via Redis backend.
 
 ```
 usage: redis-predict-od [-h] [-l {DEBUG,INFO,WARNING,ERROR,CRITICAL}]
@@ -12,7 +12,7 @@ usage: redis-predict-od [-h] [-l {DEBUG,INFO,WARNING,ERROR,CRITICAL}]
                         [-t TIMEOUT] [-a {drop,input}] [-s SLEEP_TIME]
                         [--key_label KEY_LABEL] [--key_score KEY_SCORE]
 
-Makes object detection predictions via Redis backend.
+Makes object detection predictions in OPEX format via Redis backend.
 
 options:
   -h, --help            show this help message and exit
