@@ -7,9 +7,10 @@ Makes image classification predictions via Redis backend.
 
 ```
 usage: redis-predict-ic [-h] [-l {DEBUG,INFO,WARNING,ERROR,CRITICAL}]
-                        [-N LOGGER_NAME] [-H REDIS_HOST] [-p REDIS_PORT]
-                        [-d REDIS_DB] [-o CHANNEL_OUT] [-i CHANNEL_IN]
-                        [-t TIMEOUT] [-a {drop,input}] [-s SLEEP_TIME]
+                        [-N LOGGER_NAME] [--skip] [-H REDIS_HOST]
+                        [-p REDIS_PORT] [-d REDIS_DB] [-o CHANNEL_OUT]
+                        [-i CHANNEL_IN] [-t TIMEOUT] [-a {drop,input}]
+                        [-s SLEEP_TIME]
 
 Makes image classification predictions via Redis backend.
 
@@ -20,6 +21,8 @@ options:
   -N LOGGER_NAME, --logger_name LOGGER_NAME
                         The custom name to use for the logger, uses the plugin
                         name by default (default: None)
+  --skip                Disables the plugin, removing it from the pipeline.
+                        (default: False)
   -H REDIS_HOST, --redis_host REDIS_HOST
                         The Redis server to connect to. (default: localhost)
   -p REDIS_PORT, --redis_port REDIS_PORT
