@@ -9,7 +9,7 @@ usage: redis-image-listen [-h] [-l {DEBUG,INFO,WARNING,ERROR,CRITICAL}]
                           [-N LOGGER_NAME] [-H REDIS_HOST] [-p REDIS_PORT]
                           [-d REDIS_DB] [-i CHANNEL_IN] [-t TIMEOUT]
                           [-a {keep-waiting,stop}] [-s SLEEP_TIME] -T
-                          {ic,is,od} [-P PREFIX]
+                          {dp,ic,is,od} [-P PREFIX]
 
 Listens for images being broadcast and forwards them as the specified data
 type.
@@ -39,8 +39,16 @@ options:
                         keep-waiting)
   -s SLEEP_TIME, --sleep_time SLEEP_TIME
                         The time in seconds between polls. (default: 0.01)
-  -T {ic,is,od}, --data_type {ic,is,od}
+  -T {dp,ic,is,od}, --data_type {dp,ic,is,od}
                         The type of data to forward (default: None)
   -P PREFIX, --prefix PREFIX
                         The prefix to use for the images (default: None)
 ```
+
+The following data types are available:
+
+* dp: depth
+* ic: image classification
+* is: image segmentation
+* od: object detection
+
