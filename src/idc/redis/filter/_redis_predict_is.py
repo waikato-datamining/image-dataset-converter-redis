@@ -5,7 +5,7 @@ from typing import List
 from PIL import Image
 from wai.logging import LOGGING_WARNING
 
-from idc.api import ImageSegmentationData, from_bluechannel, from_grayscale, from_indexedpng
+from idc.api import ImageSegmentationData, imgseg_from_bluechannel, imgseg_from_grayscale, imgseg_from_indexedpng
 from ._redis_pubsub_filter import AbstractRedisPubSubFilter
 
 FORMAT_INDEXEDPNG = "indexedpng"
@@ -186,11 +186,11 @@ class ImageSegmentationRedisPredict(AbstractRedisPubSubFilter):
         # convert received image to indices
         image = self._fix_size(Image.open(io.BytesIO(data)), w, h)
         if self.image_format == FORMAT_INDEXEDPNG:
-            annotations = from_indexedpng(image, self.labels, label_mapping, self.logger())
+            annotations = imgseg_from_indexedpng(image, self.labels, label_mapping, self.logger())
         elif self.image_format == FORMAT_BLUECHANNEL:
-            annotations = from_bluechannel(image, self.labels, label_mapping, self.logger())
+            annotations = imgseg_from_bluechannel(image, self.labels, label_mapping, self.logger())
         elif self.image_format == FORMAT_GRAYSCALE:
-            annotations = from_grayscale(image, self.labels, label_mapping, self.logger())
+            annotations = imgseg_from_grayscale(image, self.labels, label_mapping, self.logger())
         else:
             raise Exception("Unsupported image format: %s" % self.image_format)
 
