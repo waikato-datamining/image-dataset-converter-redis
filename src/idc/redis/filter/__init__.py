@@ -1,5 +1,6 @@
 from ._redis_filter import AbstractRedisFilter
 from ._redis_pubsub_filter import AbstractRedisPubSubFilter, TIMEOUT_ACTION_DROP, TIMEOUT_ACTION_INPUT, TIMEOUT_ACTIONS
+from ._redis_predict_dp import DepthRedisPredict
 from ._redis_predict_ic import ImageClassificationRedisPredict
 from ._redis_predict_is import ImageSegmentationRedisPredict
 from ._redis_predict_od import ObjectDetectionRedisPredict
