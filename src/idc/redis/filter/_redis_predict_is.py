@@ -20,7 +20,7 @@ FORMATS = [
 
 class ImageSegmentationRedisPredict(AbstractRedisPubSubFilter):
     """
-    Ancestor for filters that perform predictions via Redis.
+    Makes image segmentation predictions via Redis backend.
     """
 
     def __init__(self, redis_host: str = None, redis_port: int = None, redis_db: int = None,

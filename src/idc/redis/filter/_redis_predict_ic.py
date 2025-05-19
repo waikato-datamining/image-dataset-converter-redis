@@ -9,7 +9,7 @@ from ._redis_pubsub_filter import AbstractRedisPubSubFilter
 
 class ImageClassificationRedisPredict(AbstractRedisPubSubFilter):
     """
-    Ancestor for filters that perform predictions via Redis.
+    Makes image classification predictions via Redis backend.
     """
 
     def __init__(self, redis_host: str = None, redis_port: int = None, redis_db: int = None,
