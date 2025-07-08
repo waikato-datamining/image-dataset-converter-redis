@@ -194,5 +194,5 @@ class ImageSegmentationRedisPredict(AbstractRedisPubSubFilter):
         else:
             raise Exception("Unsupported image format: %s" % self.image_format)
 
-        return ImageSegmentationData(source=item.source, data=item.data, annotation=annotations,
-                                     metadata=item.get_metadata())
+        return ImageSegmentationData(source=item.source, image_name=item.image_name, data=item.data,
+                                     annotation=annotations, metadata=item.get_metadata())

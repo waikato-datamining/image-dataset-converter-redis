@@ -6,6 +6,7 @@ Changelog
 
 - using new prefixed image segmentation methods like `imgseg_from_bluechannel` instead of `to_bluechannel`
 - added `redis-predict-dp` filter for taking advantage of depth estimation docker images
+- the redis-predict-dp/-ic/-is/-od filters now set the image_name as well when creating the new container
 
 
 0.0.3 (2025-04-03)

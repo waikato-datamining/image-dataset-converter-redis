@@ -180,5 +180,5 @@ class ObjectDetectionRedisPredict(AbstractRedisPubSubFilter):
 
         annotations = LocatedObjects(lobjects)
 
-        return ObjectDetectionData(source=item.source, data=item.data, annotation=annotations,
-                                   metadata=item.get_metadata())
+        return ObjectDetectionData(source=item.source, image_name=item.image_name, data=item.data,
+                                   annotation=annotations, metadata=item.get_metadata())

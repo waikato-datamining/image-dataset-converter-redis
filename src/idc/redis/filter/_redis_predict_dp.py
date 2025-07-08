@@ -182,5 +182,5 @@ class DepthRedisPredict(AbstractRedisPubSubFilter):
         else:
             raise Exception("Unsupported format: %s" % self.data_format)
 
-        return DepthData(source=item.source, data=item.data, annotation=annotations,
-                         metadata=item.get_metadata())
+        return DepthData(source=item.source, image_name=item.image_name, data=item.data,
+                         annotation=annotations, metadata=item.get_metadata())

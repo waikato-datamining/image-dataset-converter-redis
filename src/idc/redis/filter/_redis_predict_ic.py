@@ -116,4 +116,5 @@ class ImageClassificationRedisPredict(AbstractRedisPubSubFilter):
                 max_key = k
                 max_value = preds[k]
 
-        return ImageClassificationData(source=item.source, data=item.data, annotation=max_key, metadata=item.get_metadata())
+        return ImageClassificationData(source=item.source, image_name=item.image_name, data=item.data,
+                                       annotation=max_key, metadata=item.get_metadata())
