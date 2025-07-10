@@ -1,7 +1,7 @@
 Changelog
 =========
 
-0.0.4 (????-??-??)
+0.0.4 (2025-07-11)
 ------------------
 
 - using new prefixed image segmentation methods like `imgseg_from_bluechannel` instead of `to_bluechannel`
