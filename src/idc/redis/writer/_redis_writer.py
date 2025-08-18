@@ -3,7 +3,7 @@ import argparse
 import redis
 from wai.logging import LOGGING_WARNING
 
-from idc.api import StreamWriter
+from kasperl.api import StreamWriter
 from idc.redis.core import RedisSession
 
 

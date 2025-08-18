@@ -2,7 +2,7 @@ import argparse
 
 from wai.logging import LOGGING_WARNING
 
-from idc.api import make_list
+from kasperl.api import make_list
 from ._redis_writer import AbstractRedisStreamWriter
 
 

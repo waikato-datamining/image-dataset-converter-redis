@@ -3,7 +3,7 @@ import argparse
 import redis
 from wai.logging import LOGGING_WARNING
 
-from idc.api import Reader
+from kasperl.api import Reader
 from idc.redis.core import RedisSession
 
 
