@@ -5,8 +5,8 @@ from typing import List
 from PIL import Image
 from wai.logging import LOGGING_WARNING
 
+from kasperl.redis.reader import AbstractRedisListener
 from idc.api import DATATYPES, data_type_to_class, DataTypeSupporter, ImageData
-from ._redis_listener import AbstractRedisListener
 
 
 class RedisImageReader(AbstractRedisListener, DataTypeSupporter):

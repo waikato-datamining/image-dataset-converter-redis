@@ -4,8 +4,8 @@ from typing import List
 
 from wai.logging import LOGGING_WARNING
 
+from kasperl.redis.writer import AbstractRedisBroadcaster
 from idc.api import ImageData
-from ._redis_broadcaster import AbstractRedisBroadcaster
 
 
 class RedisDataBroadcast(AbstractRedisBroadcaster):

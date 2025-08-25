@@ -3,8 +3,8 @@ from typing import List
 
 from wai.logging import LOGGING_WARNING
 
+from kasperl.redis.filter import AbstractRedisPubSubFilter
 from idc.api import ImageClassificationData
-from ._redis_pubsub_filter import AbstractRedisPubSubFilter
 
 
 class ImageClassificationRedisPredict(AbstractRedisPubSubFilter):

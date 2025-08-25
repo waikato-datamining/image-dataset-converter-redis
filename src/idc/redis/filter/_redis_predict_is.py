@@ -5,8 +5,8 @@ from typing import List
 from PIL import Image
 from wai.logging import LOGGING_WARNING
 
+from kasperl.redis.filter import AbstractRedisPubSubFilter
 from idc.api import ImageSegmentationData, imgseg_from_bluechannel, imgseg_from_grayscale, imgseg_from_indexedpng
-from ._redis_pubsub_filter import AbstractRedisPubSubFilter
 
 FORMAT_INDEXEDPNG = "indexedpng"
 FORMAT_BLUECHANNEL = "bluechannel"

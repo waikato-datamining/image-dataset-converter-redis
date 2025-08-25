@@ -6,8 +6,8 @@ from wai.common.adams.imaging.locateobjects import LocatedObjects, LocatedObject
 from wai.common.geometry import Polygon, Point
 from wai.logging import LOGGING_WARNING
 
+from kasperl.redis.filter import AbstractRedisPubSubFilter
 from idc.api import ObjectDetectionData
-from ._redis_pubsub_filter import AbstractRedisPubSubFilter
 
 
 class ObjectDetectionRedisPredict(AbstractRedisPubSubFilter):

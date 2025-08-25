@@ -6,8 +6,8 @@ from typing import List
 from PIL import Image
 from wai.logging import LOGGING_WARNING
 
+from kasperl.redis.filter import AbstractRedisPubSubFilter
 from idc.api import DepthData
-from ._redis_pubsub_filter import AbstractRedisPubSubFilter
 
 FORMAT_GRAYSCALE = "grayscale"
 FORMAT_GRAYSCALE_DEPTH = "grayscale-depth"
