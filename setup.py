@@ -34,7 +34,7 @@ setup(
         "image_dataset_converter",
         "kasperl_redis",
     ],
-    version="0.0.4",
+    version="0.1.0",
     author='Peter Reutemann',
     author_email='fracpete@waikato.ac.nz',
     entry_points={
