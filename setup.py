@@ -21,7 +21,6 @@ setup(
     url="https://github.com/waikato-datamining/image-dataset-converter-redis",
     classifiers=[
         'Development Status :: 4 - Beta',
-        'License :: OSI Approved :: MIT License',
         'Topic :: Scientific/Engineering :: Artificial Intelligence',
         'Topic :: Scientific/Engineering :: Image Processing',
     ],
