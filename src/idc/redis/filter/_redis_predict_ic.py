@@ -1,4 +1,5 @@
 import json
+import logging
 from typing import List
 
 from wai.logging import LOGGING_WARNING
@@ -107,6 +108,9 @@ class ImageClassificationRedisPredict(AbstractRedisPubSubFilter):
         :param data: the received data
         :return: the generated output data
         """
+        if self.logger().isEnabledFor(logging.DEBUG):
+            self.logger().debug(data)
+
         # convert to wai.annotations annotations
         preds = json.loads(data)
         max_key = None
@@ -115,6 +119,9 @@ class ImageClassificationRedisPredict(AbstractRedisPubSubFilter):
             if preds[k] > max_value:
                 max_key = k
                 max_value = preds[k]
+
+        if self.logger().isEnabledFor(logging.DEBUG):
+            self.logger().debug("max_value=%f and max_key=%s" % (max_value, max_key))
 
         return ImageClassificationData(source=item.source, image_name=item.image_name, data=item.data,
                                        annotation=max_key, metadata=item.get_metadata())

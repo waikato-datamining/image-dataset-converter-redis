@@ -1,4 +1,5 @@
 import argparse
+import logging
 from typing import List
 
 from opex import ObjectPredictions
@@ -150,6 +151,9 @@ class ObjectDetectionRedisPredict(AbstractRedisPubSubFilter):
         :param data: the received data
         :return: the generated output data
         """
+        if self.logger().isEnabledFor(logging.DEBUG):
+            self.logger().debug(data)
+
         oobjects = ObjectPredictions.from_json_string(data)
         lobjects = []
         for oobject in oobjects.objects:
@@ -179,6 +183,9 @@ class ObjectDetectionRedisPredict(AbstractRedisPubSubFilter):
             lobjects.append(located_object)
 
         annotations = LocatedObjects(lobjects)
+
+        if self.logger().isEnabledFor(logging.DEBUG):
+            self.logger().debug("# annotations: %d" % len(annotations))
 
         return ObjectDetectionData(source=item.source, image_name=item.image_name, data=item.data,
                                    annotation=annotations, metadata=item.get_metadata())

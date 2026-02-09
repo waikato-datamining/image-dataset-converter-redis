@@ -1,6 +1,12 @@
 Changelog
 =========
 
+0.1.1 (????-??-??)
+------------------
+
+- added more debugging output to `redis-predict-ic` and `redis-predict-od`
+
+
 0.1.0 (2025-10-31)
 ------------------
 
