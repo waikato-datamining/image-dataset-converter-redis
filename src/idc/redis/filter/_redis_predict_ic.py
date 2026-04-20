@@ -1,3 +1,4 @@
+import argparse
 import json
 import logging
 from typing import List
@@ -15,7 +16,7 @@ class ImageClassificationRedisPredict(AbstractRedisPubSubFilter):
 
     def __init__(self, redis_host: str = None, redis_port: int = None, redis_db: int = None,
                  channel_out: str = None, channel_in: str = None, timeout: float = None,
-                 timeout_action: str = None, sleep_time: float = None,
+                 timeout_action: str = None, sleep_time: float = None, key_raw: str = None,
                  logger_name: str = None, logging_level: str = LOGGING_WARNING):
         """
         Initializes the filter.
@@ -36,6 +37,8 @@ class ImageClassificationRedisPredict(AbstractRedisPubSubFilter):
         :type timeout_action: str
         :param sleep_time: the time in seconds between polls
         :type sleep_time: float
+        :param key_raw: the key in the meta-data to store the full prediction result under
+        :type key_raw: str
         :param logger_name: the name to use for the logger
         :type logger_name: str
         :param logging_level: the logging level to use
@@ -45,6 +48,7 @@ class ImageClassificationRedisPredict(AbstractRedisPubSubFilter):
                          channel_out=channel_out, channel_in=channel_in, timeout=timeout,
                          timeout_action=timeout_action, sleep_time=sleep_time,
                          logger_name=logger_name, logging_level=logging_level)
+        self.key_raw = key_raw
 
     def name(self) -> str:
         """
@@ -63,6 +67,27 @@ class ImageClassificationRedisPredict(AbstractRedisPubSubFilter):
         :rtype: str
         """
         return "Makes image classification predictions via Redis backend."
+
+    def _create_argparser(self) -> argparse.ArgumentParser:
+        """
+        Creates an argument parser. Derived classes need to fill in the options.
+
+        :return: the parser
+        :rtype: argparse.ArgumentParser
+        """
+        parser = super()._create_argparser()
+        parser.add_argument("--key_raw", metavar="KEY", type=str, default=None, help="The key in the meta-data to store the raw prediction result under.")
+        return parser
+
+    def _apply_args(self, ns: argparse.Namespace):
+        """
+        Initializes the object with the arguments of the parsed namespace.
+
+        :param ns: the parsed arguments
+        :type ns: argparse.Namespace
+        """
+        super()._apply_args(ns)
+        self.key_raw = ns.key_raw
 
     def _default_channel_out(self):
         """
@@ -120,8 +145,16 @@ class ImageClassificationRedisPredict(AbstractRedisPubSubFilter):
                 max_key = k
                 max_value = preds[k]
 
+        meta = item.get_metadata()
+
+        # store raw result?
+        if self.key_raw is not None:
+            if meta is None:
+                meta = dict()
+            meta[self.key_raw] = str(data)
+
         if self.logger().isEnabledFor(logging.DEBUG):
             self.logger().debug("max_value=%f and max_key=%s" % (max_value, max_key))
 
         return ImageClassificationData(source=item.source, image_name=item.image_name, data=item.data,
-                                       annotation=max_key, metadata=item.get_metadata())
+                                       annotation=max_key, metadata=meta)

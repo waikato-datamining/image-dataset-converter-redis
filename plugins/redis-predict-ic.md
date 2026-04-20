@@ -10,7 +10,7 @@ usage: redis-predict-ic [-h] [-l {DEBUG,INFO,WARNING,ERROR,CRITICAL}]
                         [-N LOGGER_NAME] [--skip] [-H REDIS_HOST]
                         [-p REDIS_PORT] [-d REDIS_DB] [-o CHANNEL_OUT]
                         [-i CHANNEL_IN] [-t TIMEOUT] [-a {drop,input}]
-                        [-s SLEEP_TIME]
+                        [-s SLEEP_TIME] [--key_raw KEY]
 
 Makes image classification predictions via Redis backend.
 
@@ -44,4 +44,6 @@ options:
                         drop)
   -s SLEEP_TIME, --sleep_time SLEEP_TIME
                         The time in seconds between polls. (default: 0.01)
+  --key_raw KEY         The key in the meta-data to store the raw prediction
+                        result under. (default: None)
 ```

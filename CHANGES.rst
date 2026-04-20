@@ -5,6 +5,7 @@ Changelog
 ------------------
 
 - added more debugging output to `redis-predict-ic` and `redis-predict-od`
+- added `--key_raw` option to `redis-predict-ic` to store the raw results in the meta-data
 
 
 0.1.0 (2025-10-31)
