@@ -5,6 +5,7 @@ from typing import List
 
 from wai.logging import LOGGING_WARNING
 
+from kasperl.api import safe_deepcopy
 from kasperl.redis.filter import AbstractRedisPubSubFilter
 from idc.api import ImageClassificationData
 
@@ -151,6 +152,8 @@ class ImageClassificationRedisPredict(AbstractRedisPubSubFilter):
         if self.key_raw is not None:
             if meta is None:
                 meta = dict()
+            else:
+                meta = safe_deepcopy(meta)
             meta[self.key_raw] = str(data)
 
         if self.logger().isEnabledFor(logging.DEBUG):
