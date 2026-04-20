@@ -154,7 +154,7 @@ class ImageClassificationRedisPredict(AbstractRedisPubSubFilter):
                 meta = dict()
             else:
                 meta = safe_deepcopy(meta)
-            meta[self.key_raw] = str(data)
+            meta[self.key_raw] = json.dumps(preds)
 
         if self.logger().isEnabledFor(logging.DEBUG):
             self.logger().debug("max_value=%f and max_key=%s" % (max_value, max_key))
