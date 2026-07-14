@@ -1,12 +1,12 @@
 import argparse
-import io
 from typing import List
 
 from PIL import Image
 from wai.logging import LOGGING_WARNING
 
+from idc.api import ImageSegmentationData, imgseg_from_bluechannel, imgseg_from_grayscale, imgseg_from_indexedpng, \
+    load_image_from_bytes
 from kasperl.redis.filter import AbstractRedisPubSubFilter
-from idc.api import ImageSegmentationData, imgseg_from_bluechannel, imgseg_from_grayscale, imgseg_from_indexedpng
 
 FORMAT_INDEXEDPNG = "indexedpng"
 FORMAT_BLUECHANNEL = "bluechannel"
@@ -184,7 +184,7 @@ class ImageSegmentationRedisPredict(AbstractRedisPubSubFilter):
             label_mapping[i] = label
 
         # convert received image to indices
-        image = self._fix_size(Image.open(io.BytesIO(data)), w, h)
+        image = self._fix_size(load_image_from_bytes(data), w, h)
         if self.image_format == FORMAT_INDEXEDPNG:
             annotations = imgseg_from_indexedpng(image, self.labels, label_mapping, self.logger())
         elif self.image_format == FORMAT_BLUECHANNEL:

@@ -1,13 +1,13 @@
 import argparse
 import io
-import numpy as np
 from typing import List
 
+import numpy as np
 from PIL import Image
 from wai.logging import LOGGING_WARNING
 
+from idc.api import DepthData, load_image_from_bytes
 from kasperl.redis.filter import AbstractRedisPubSubFilter
-from idc.api import DepthData
 
 FORMAT_GRAYSCALE = "grayscale"
 FORMAT_GRAYSCALE_DEPTH = "grayscale-depth"
@@ -174,9 +174,9 @@ class DepthRedisPredict(AbstractRedisPubSubFilter):
 
         # convert received data
         if self.data_format == FORMAT_GRAYSCALE:
-            annotations = self._fix_size(Image.open(io.BytesIO(data)), w, h)
+            annotations = self._fix_size(load_image_from_bytes(data), w, h)
         elif self.data_format == FORMAT_GRAYSCALE_DEPTH:
-            annotations = self._fix_size(Image.open(io.BytesIO(data)), w, h)
+            annotations = self._fix_size(load_image_from_bytes(data), w, h)
         elif self.data_format == FORMAT_NUMPY:
             annotations = np.load(io.BytesIO(data))
         else:

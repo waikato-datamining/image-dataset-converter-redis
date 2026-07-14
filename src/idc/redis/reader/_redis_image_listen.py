@@ -2,11 +2,10 @@ import argparse
 import io
 from typing import List
 
-from PIL import Image
 from wai.logging import LOGGING_WARNING
 
+from idc.api import DATATYPES, data_type_to_class, DataTypeSupporter, ImageData, load_image_from_bytes
 from kasperl.redis.reader import AbstractRedisListener
-from idc.api import DATATYPES, data_type_to_class, DataTypeSupporter, ImageData
 
 
 class RedisImageReader(AbstractRedisListener, DataTypeSupporter):
@@ -122,7 +121,7 @@ class RedisImageReader(AbstractRedisListener, DataTypeSupporter):
         self._counter += 1
 
         img_io = io.BytesIO(data)
-        img = Image.open(img_io)
+        img = load_image_from_bytes(img_io)
 
         image_name = self.prefix
         if len(image_name) > 0:
